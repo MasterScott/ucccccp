@@ -9,6 +9,8 @@
 
 #include <string>
 #include "base64.h"
+#include <ctime>
+#include <cmath>
 
 /*
  *  Usage:
@@ -44,10 +46,12 @@ inline std::string crappy_checksum(const std::string& in) {
 }
 
 inline std::string crappy_xorstring(const std::string& in) {
+        std::time_t time = std::time(nullptr);
+        unsigned int fiveMinuteBlocksSinceEpoch = ceil(time/300);
 	std::string out;
 	for (int i = 0; i < in.length(); i++) {
 		// 696969th prime, 13371337th prime
-		out.push_back(in[i] ^ ((10522103 * in.length()) + i * 244053389 % 256));
+                out.push_back(in[i] ^ ((10522103 * in.length()) + i * 244053389 % 256 + fiveMinuteBlocksSinceEpoch));
 	}
 	return out;
 }
