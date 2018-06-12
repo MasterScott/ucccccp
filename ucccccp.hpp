@@ -32,6 +32,7 @@
  * 			data = base64(crappy_xorstring(input))
  *			checksum = crappy_checksum(input)
  *		Not time based, useful for normal daily use
+ *
  *	B:
  *		!!B[data][checksum]
  *			data = base64(crappy_xorstringb(input))
