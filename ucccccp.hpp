@@ -119,7 +119,7 @@ inline std::string decrypt(const std::string &in)
     case 'B':
     {
         std::time_t time                       = std::time(nullptr);
-        unsigned int twoMinuteBlocksSinceEpoch = ceil(time / 30);
+        unsigned int twoMinuteBlocksSinceEpoch = ceil(time / 120);
         std::string b64;
         for (int i = -1; i < 2; i++)
         {
@@ -156,7 +156,7 @@ inline std::string encrypt(const std::string &in, char version = 'A')
     case 'B':
     {
         std::time_t time                       = std::time(nullptr);
-        unsigned int twoMinuteBlocksSinceEpoch = ceil(time / 30);
+        unsigned int twoMinuteBlocksSinceEpoch = ceil(time / 120);
         std::string b64;
         Base64::Encode(crappy_xorstringb("ucp" + in, twoMinuteBlocksSinceEpoch),
                        &b64);
