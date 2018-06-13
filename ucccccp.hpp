@@ -8,9 +8,9 @@
 #pragma once
 
 #include <string>
-#include "base64.h"
 #include <ctime>
 #include <cmath>
+#include "base64.h"
 
 /*
  *  Usage:
@@ -31,6 +31,13 @@
  * 		!!A[data][checksum]
  * 			data = base64(crappy_xorstring(input))
  *			checksum = crappy_checksum(input)
+ *		Not time based, useful for normal daily use
+ *
+ *	B:
+ *		!!B[data][checksum]
+ *			data = base64(crappy_xorstringb(input))
+ *			checksum = crappy_checksum(input)
+ *		Uses time based encryption, useful for fast and more secure exchanges
  */
 
 namespace ucccccp {
@@ -46,12 +53,21 @@ inline std::string crappy_checksum(const std::string& in) {
 }
 
 inline std::string crappy_xorstring(const std::string& in) {
-        std::time_t time = std::time(nullptr);
-        unsigned int fiveMinuteBlocksSinceEpoch = ceil(time/300);
 	std::string out;
 	for (int i = 0; i < in.length(); i++) {
 		// 696969th prime, 13371337th prime
-                out.push_back(in[i] ^ ((10522103 * in.length()) + i * 244053389 % 256 + fiveMinuteBlocksSinceEpoch));
+		out.push_back(in[i] ^ ((10522103 * in.length()) + i * 244053389 % 256));
+	}
+	return out;
+}
+
+inline std::string crappy_xorstringb(const std::string& in) {
+	std::string out;
+	std::time_t time = std::time(nullptr);
+	unsigned int fiveMinuteBlocksSinceEpoch = ceil(time/300);
+	for (int i = 0; i < in.length(); i++) {
+		// 323969th prime (CA7 + 69), 829289th (CA71337) prime
+		out.push_back(in[i] ^ ((4623413 * in.length()) + i * 12673579 % 256 + fiveMinuteBlocksSinceEpoch));
 	}
 	return out;
 }
@@ -59,12 +75,14 @@ inline std::string crappy_xorstring(const std::string& in) {
 /*
  * validate
  * A
+ * B
  */
 inline bool validate(const std::string& in) {
 	if (in.length() < 4) return false;
 	if (in[0] != '!' || in[1] != '!') return false;
 	switch (in[2]) {
 	case 'A':
+	case 'B':
 		return crappy_checksum(in.substr(3, in.length() - 5)) == in.substr(in.length() - 2);
 	default:
 		return false;
@@ -74,6 +92,7 @@ inline bool validate(const std::string& in) {
 /*
  * 	decrypt
  * 	A
+ * 	B
  */
 inline std::string decrypt(const std::string& in) {
 	switch (in[2]) {
@@ -81,6 +100,11 @@ inline std::string decrypt(const std::string& in) {
 		std::string b64;
 		Base64::Decode(in.substr(3, in.length() - 5), &b64);
 		return crappy_xorstring(b64);
+	}
+	case 'B': {
+		std::string b64;
+		Base64::Decode(in.substr(3, in.length() - 5), &b64);
+		return crappy_xorstringb(b64);
 	}
 	default:
 		return "Unsupported version";
@@ -91,6 +115,7 @@ inline std::string decrypt(const std::string& in) {
  * 	encrypt
  * 		falls back to A if version is invalid
  * 	A
+ * 	B
  */
 inline std::string encrypt(const std::string& in, char version = 'A') {
 	switch (version) {
@@ -100,7 +125,13 @@ inline std::string encrypt(const std::string& in, char version = 'A') {
 		Base64::Encode(crappy_xorstring(in), &b64);
 		return "!!A" + b64 + crappy_checksum(b64);
 	}
+	case 'B': {
+		std::string b64;
+		Base64::Encode(crappy_xorstringb(in), &b64);
+		return "!!B" + b64 + crappy_checksum(b64);
+	}
 	}
 }
 
 }
+

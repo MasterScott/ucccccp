@@ -22,4 +22,11 @@ This repo includes example code so you can include the lib to your cheat easily!
  * 		!!A[data][checksum]
  * 			data = base64(crappy_xorstring(input))
  *			checksum = crappy_checksum(input)
+ *		Not time based, useful for normal daily use
+ *
+ *	B:
+ *		!!B[data][checksum]
+ *			data = base64(crappy_xorstringb(input))
+ *			checksum = crappy_checksum(input)
+ *		Uses time based encryption, useful for fast and more secure exchanges
 ```
