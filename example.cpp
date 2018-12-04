@@ -1,7 +1,7 @@
 /*
-	EXAMPLE! Usage of UCCCCP in hooks.
-	Partly pasted from cathook
-	WILL NOT COMPILE/WORK IN THAT WAY! YOU HAVE TO ADAPT THIS CODE TO YOUR CHEAT.
+    EXAMPLE! Usage of UCCCCP in hooks.
+    Partly pasted from cathook
+    WILL NOT COMPILE/WORK IN THAT WAY! YOU HAVE TO ADAPT THIS CODE TO YOUR CHEAT.
 */
 
 #include "ucccccp.hpp"
@@ -9,9 +9,7 @@
 
 // COMMANDS (ripped straight from cathook)
 
-CatCommand ucccccp_encrypt("ucccccp_encrypt", "Encrypt a message", [](const CCommand &args) {
-    logging::Info("%s", ucccccp::encrypt(std::string(args.ArgS())).c_str());
-});
+CatCommand ucccccp_encrypt("ucccccp_encrypt", "Encrypt a message", [](const CCommand &args) { logging::Info("%s", ucccccp::encrypt(std::string(args.ArgS())).c_str()); });
 
 CatCommand ucccccp_decrypt("ucccccp_decrypt", "Decrypt a message", [](const CCommand &args) {
     if (ucccccp::validate(std::string(args.ArgS())))

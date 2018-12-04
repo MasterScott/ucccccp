@@ -66,15 +66,13 @@ inline std::string crappy_xorstring(const std::string &in)
     return out;
 }
 
-inline std::string crappy_xorstringb(const std::string &in,
-                                     unsigned int timeBlocks)
+inline std::string crappy_xorstringb(const std::string &in, unsigned int timeBlocks)
 {
     std::string out;
     for (int i = 0; i < in.length(); i++)
     {
         // 323969th prime (CA7 + 69), 829289th (CA71337) prime
-        out.push_back(in[i] ^ ((4623413 * in.length()) + i * 12673579 % 256 +
-                               timeBlocks));
+        out.push_back(in[i] ^ ((4623413 * in.length()) + i * 12673579 % 256 + timeBlocks));
     }
     return out;
 }
@@ -94,8 +92,7 @@ inline bool validate(const std::string &in)
     {
     case 'A':
     case 'B':
-        return crappy_checksum(in.substr(3, in.length() - 5)) ==
-               in.substr(in.length() - 2);
+        return crappy_checksum(in.substr(3, in.length() - 5)) == in.substr(in.length() - 2);
     default:
         return false;
     }
@@ -124,8 +121,7 @@ inline std::string decrypt(const std::string &in)
         for (int i = -1; i < 2; i++)
         {
             Base64::Decode(in.substr(3, in.length() - 5), &b64);
-            std::string output =
-                crappy_xorstringb(b64, twoMinuteBlocksSinceEpoch + i);
+            std::string output = crappy_xorstringb(b64, twoMinuteBlocksSinceEpoch + i);
             if (output.substr(0, 3) == "ucp")
                 return output.substr(3);
         }
@@ -158,8 +154,7 @@ inline std::string encrypt(const std::string &in, char version = 'A')
         std::time_t time                       = std::time(nullptr);
         unsigned int twoMinuteBlocksSinceEpoch = ceil(time / 120);
         std::string b64;
-        Base64::Encode(crappy_xorstringb("ucp" + in, twoMinuteBlocksSinceEpoch),
-                       &b64);
+        Base64::Encode(crappy_xorstringb("ucp" + in, twoMinuteBlocksSinceEpoch), &b64);
         return "!!B" + b64 + crappy_checksum(b64);
     }
     }
