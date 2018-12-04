@@ -164,4 +164,4 @@ inline std::string encrypt(const std::string &in, char version = 'A')
     }
     }
 }
-}
+} // namespace ucccccp
